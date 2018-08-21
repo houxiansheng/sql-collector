@@ -15,6 +15,6 @@ return [
         'partition_hash' => 10,
         'project' => 'project1',
         'msg_center_url' => $msgCenterUrl,
-        'topic' => 'dev.gapapi.ceshi.youxinjinrong.com_setPayAmount'
+        'topic' => 'sqltool.youxinjinrong.com_sql_collect_topic'
     ]
 ];

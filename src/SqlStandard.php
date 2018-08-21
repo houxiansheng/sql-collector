@@ -208,7 +208,7 @@ class SqlStandard
         } else {
             $uri = '';
         }
-        if (isset($_SERVER['HTTP_HOST'])) {
+        if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST']) {
             $host = $_SERVER['HTTP_HOST'];
         } else {
             $host = 'script';

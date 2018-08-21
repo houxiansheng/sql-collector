@@ -38,7 +38,7 @@ abstract class HandlerAbstract
                 $res = $this->aggregateFun($index, $fields);
                 break;
             case 'function':
-                $res = $this->function($index, $fields);
+                $res = $this->functions($index, $fields);
                 break;
             case 'operator': // 操作符
                 $res = $this->operator($index, $fields);
@@ -106,7 +106,7 @@ abstract class HandlerAbstract
         return GlobalVar::$CHECK_SUCCESS;
     }
 
-    protected function function($index, $fields)
+    protected function functions($index, $fields)
     {
         if ($this->module == 'where') { // where下禁用一切函数,暂不考虑左侧还是右侧
             ErrorLog::writeLog('3-' . $this->module . '-fun-' . $fields['base_expr']);

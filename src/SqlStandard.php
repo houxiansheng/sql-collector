@@ -170,9 +170,9 @@ class SqlStandard
                     'sql' => json_encode($sql)
                 ];
                 // 临时替换为curl方式
-                $res = $this->sendCurl($data);
-                // $producerAdapt = new producerAdapt();
-                // $res = $producerAdapt->send($topicName, $data);
+                //$res = $this->sendCurl($data);
+                 $producerAdapt = new producerAdapt();
+                 $res = $producerAdapt->send($topicName, $data);
             } catch (\Exception $e) {}
         }
     }

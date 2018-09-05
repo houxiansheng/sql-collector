@@ -10,7 +10,7 @@ abstract class HandlerAbstract
 
     protected $module = null;
 
-    public function handler($index, array $fields)
+    public function handler($index, array $fields, $parentModule = null)
     {
         switch ($fields['expr_type']) {
             case 'subquery': // 存在子查询，返回继续遍历
@@ -23,7 +23,7 @@ abstract class HandlerAbstract
                 $res = GlobalVar::$CHECK_SUCCESS;
                 break;
             case 'colref': // 列名
-                $res = $this->colRef($index, $fields);
+                $res = $this->colRef($index, $fields, $parentModule);
                 break;
             case 'reserved': // 保留字段
                 $res = GlobalVar::$CHECK_SUCCESS;
@@ -78,14 +78,16 @@ abstract class HandlerAbstract
         return GlobalVar::$CHECK_SUCCESS;
     }
 
-    protected function colRef($index, $fields)
+    protected function colRef($index, $fields, $parentModule = null)
     {
         // 别称定义
         if (isset($fields['alias']) && $fields['alias'] && CommonTool::keyWord($fields['alias']['no_quotes'])) {
             ErrorLog::writeLog('2-' . $this->module . '-alias-' . $fields['alias']['no_quotes']);
         }
         if (isset($fields['base_expr']) && $fields['base_expr'] && $fields['base_expr'] == '*') {
-            ErrorLog::writeLog('4-' . $this->module . '-*');
+            if (isset($parentModule['expr_type']) && $parentModule['expr_type'] == 'aggregate_function' && $parentModule['base_expr'] == 'count') {} else {
+                ErrorLog::writeLog('4-' . $this->module . '-*');
+            }
         }
     }
 
@@ -100,7 +102,7 @@ abstract class HandlerAbstract
         }
         if (isset($fields['sub_tree']) && $fields['sub_tree']) {
             foreach ($fields['sub_tree'] as $key => $val) {
-                $this->handler($key, $val);
+                $this->handler($key, $val, $fields);
             }
         }
         return GlobalVar::$CHECK_SUCCESS;

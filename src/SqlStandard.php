@@ -216,7 +216,7 @@ class SqlStandard
         $uriArr = explode('?', $uri);
         $this->extraInfo['pname'] = isset($this->extraInfo['pname']) ? $this->extraInfo['pname'] : $projectName;
         $this->extraInfo['host'] = isset($this->extraInfo['host']) ? $this->extraInfo['host'] : $host;
-        $this->extraInfo['uri'] = isset($this->extraInfo['uri']) ? $this->extraInfo['uri'] : $uriArr[0];
+        $this->extraInfo['uri'] = isset($this->extraInfo['uri']) && $this->extraInfo['uri'] ? $this->extraInfo['uri'] : $uriArr[0];
         return $this->extraInfo;
     }
 }

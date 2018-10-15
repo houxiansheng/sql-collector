@@ -8,8 +8,14 @@ class HistorySql
 
     public static function write($sql)
     {
-        if ($sql && count(self::$sql) < 50 && ! in_array($sql, self::$sql)) {
-            self::$sql[] = $sql;
+        if (count(self::$sql) < 50 && isset($sql['db']) && isset($sql['query'])) {
+            $uniq = md5($sql['db'] . $sql['query']);
+            if (! in_array($sql, self::$sql)) {
+                $sql['count'] = 1;
+                self::$sql[$uniq] = $sql;
+            } elseif ($sql) {
+                self::$sql[$uniq]['count'] ++;
+            }
         }
     }
 

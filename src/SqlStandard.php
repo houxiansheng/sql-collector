@@ -158,7 +158,19 @@ class SqlStandard
         }
         return $return;
     }
-
+    public function delConst(&$parser){
+        if(is_array($parser)){
+            foreach ($parser as $key=>&$val){
+                if(is_array($val)){
+                    $this->delConst($parser[$key]);
+                }else
+                    if($key=='expr_type' && $val=='const'){
+                        $parser['base_expr']='?';
+                }
+            }
+        }
+        return true;
+    }
     public function __destruct()
     { // 发送统计好的sql信息
         $topicName = Config::get('kafka.topic');

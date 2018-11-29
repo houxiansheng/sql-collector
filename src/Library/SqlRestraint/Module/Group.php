@@ -9,7 +9,7 @@ class Group extends HandlerAbstract
 
     protected $module = 'group';
 
-    public function handler($index, array $fields)
+    public function handler($index, array $fields, $parentModule = null)
     {
         return GlobalVar::$CHECK_SUCCESS;
     }

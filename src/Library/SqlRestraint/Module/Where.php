@@ -10,7 +10,7 @@ class Where extends HandlerAbstract
 
     protected $module = 'where';
 
-    protected function aggregateFun($index, $fields)
+    protected function aggregateFun($index, $fields, $parentModule = null)
     {
         ErrorLog::writeLog('3-' . $this->module . '-fun-' . $fields['base_expr']);
         return GlobalVar::$CHECK_SUCCESS;

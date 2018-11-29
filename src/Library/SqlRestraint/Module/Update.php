@@ -2,15 +2,17 @@
 namespace USQL\Library\SqlRestraint\Module;
 
 use USQL\Library\SqlRestraint\Abstracts\HandlerAbstract;
+use USQL\Library\SqlRestraint\Common\ErrorLog;
 use USQL\Library\SqlRestraint\Common\GlobalVar;
 
-class Order extends HandlerAbstract
+class Update extends HandlerAbstract
 {
 
-    protected $module = 'order';
+    protected $module = 'update';
 
     public function handler($index, array $fields, $parentModule = null)
     {
-        return GlobalVar::$CHECK_SUCCESS;
+        $res = GlobalVar::$CHECK_SUCCESS;
+        return $res;
     }
 }

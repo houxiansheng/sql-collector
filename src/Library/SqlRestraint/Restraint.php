@@ -21,6 +21,8 @@ class Restraint
         $this->register('GROUP', \USQL\Library\SqlRestraint\Module\Group::class);
         $this->register('ORDER', \USQL\Library\SqlRestraint\Module\Order::class);
         $this->register('LIMIT', \USQL\Library\SqlRestraint\Module\Limit::class);
+        $this->register('UPDATE', \USQL\Library\SqlRestraint\Module\Update::class);
+        $this->register('SET', \USQL\Library\SqlRestraint\Module\Set::class);
     }
 
     protected function register($type, $className)

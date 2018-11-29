@@ -10,7 +10,7 @@ class Delete extends HandlerAbstract
 
     protected $module = 'delete';
 
-    public function handler($index, array $fields)
+    public function handler($index, array $fields, $parentModule = null)
     {
         ErrorLog::writeLog('8-delete');
         $res = GlobalVar::$CHECK_SUCCESS;

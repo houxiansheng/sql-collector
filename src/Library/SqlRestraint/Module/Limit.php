@@ -11,7 +11,7 @@ class Limit extends HandlerAbstract
 
     protected $module = 'limit';
 
-    public function handler($index, array $fields)
+    public function handler($index, array $fields, $parentModule = null)
     {
         $offset = intval($fields['offset']);
         $rowcount = intval($fields['rowcount']);

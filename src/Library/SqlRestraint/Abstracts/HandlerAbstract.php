@@ -11,6 +11,11 @@ abstract class HandlerAbstract
 
     protected $module = null;
 
+    public function __construct($module = null)
+    {
+        $this->module = $this->module ? $this->module : strtolower($module);
+    }
+
     public function handler($index, array $fields, $parentModule = null)
     {
         switch ($fields['expr_type']) {
@@ -83,7 +88,7 @@ abstract class HandlerAbstract
     {
         // 别称定义
         if (isset($fields['alias']) && $fields['alias'] && CommonTool::keyWord($fields['alias']['no_quotes'])) {
-            //ErrorLog::writeLog('2-' . $this->module . '-alias-' . $fields['alias']['no_quotes']);
+            // ErrorLog::writeLog('2-' . $this->module . '-alias-' . $fields['alias']['no_quotes']);
         }
         if (isset($fields['base_expr']) && $fields['base_expr'] && $fields['base_expr'] == '*') {
             if (isset($parentModule['expr_type']) && $parentModule['expr_type'] == 'aggregate_function' && $parentModule['base_expr'] == 'count') {} else {
@@ -95,7 +100,7 @@ abstract class HandlerAbstract
     protected function aggregateFun($index, $fields)
     {
         if (isset($fields['alias']) && $fields['alias'] && CommonTool::keyWord($fields['alias']['no_quotes'])) {
-            //ErrorLog::writeLog('2-' . $this->module . '-alias-' . $fields['alias']['no_quotes']);
+            // ErrorLog::writeLog('2-' . $this->module . '-alias-' . $fields['alias']['no_quotes']);
         }
         // 判断下函数是否禁用
         if (CommonTool::math($fields['base_expr'])) {
@@ -137,7 +142,7 @@ abstract class HandlerAbstract
             ErrorLog::writeLog('9-' . $this->module . '-join-max');
         }
         if (isset($fields['alias']) && $fields['alias'] && CommonTool::keyWord($fields['alias']['no_quotes'])) {
-            //ErrorLog::writeLog('2-' . $this->module . '-alias-' . $fields['alias']['no_quotes']);
+            // ErrorLog::writeLog('2-' . $this->module . '-alias-' . $fields['alias']['no_quotes']);
         }
         return GlobalVar::$CHECK_SUCCESS;
     }
@@ -159,7 +164,7 @@ abstract class HandlerAbstract
 
     protected function inList($index, $fields)
     {
-        $maxNum=Config::get('sql.list_max');
+        $maxNum = Config::get('sql.list_max');
         if (isset($fields['sub_tree']) && $fields['sub_tree'] && count($fields['sub_tree']) > $maxNum) {
             ErrorLog::writeLog('6-' . $this->module . '-in-list-max');
         }

@@ -72,8 +72,13 @@ class Restraint
 
     protected function getHandleObject($module)
     {
+        if (! isset($this->register[$module])) {
+            $oldModule = $module;
+            $module = 'UNHANDLED';
+        }
         if (! is_object($this->register[$module]['object'])) {
-            $this->register[$module]['object'] = new $this->register[$module]['className']();
+            $oldModule = isset($oldModule) ? $oldModule : $module;
+            $this->register[$module]['object'] = new $this->register[$module]['className']($oldModule);
         }
         return $this->register[$module]['object'];
     }

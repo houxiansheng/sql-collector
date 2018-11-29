@@ -4,6 +4,7 @@ namespace USQL\Library\SqlRestraint\Module;
 use USQL\Library\SqlRestraint\Abstracts\HandlerAbstract;
 use USQL\Library\SqlRestraint\Common\ErrorLog;
 use USQL\Library\SqlRestraint\Common\GlobalVar;
+use USQL\Library\Config;
 
 class Limit extends HandlerAbstract
 {
@@ -14,11 +15,13 @@ class Limit extends HandlerAbstract
     {
         $offset = intval($fields['offset']);
         $rowcount = intval($fields['rowcount']);
-        if ($offset > 1000) {
-            ErrorLog::writeLog('2-' . $this->module . '-offset-' . $offset);
+        $offSet=Config::get('sql.off_set');
+        $rowCount=Config::get('sql.row_count');
+        if ($offset > $offSet) {
+            ErrorLog::writeLog('7-' . $this->module . '-offset-' . $offset);
         }
-        if ($rowcount > 10000) {
-            ErrorLog::writeLog('2-' . $this->module . '-rowcount-' . $rowcount);
+        if ($rowcount > $rowCount) {
+            ErrorLog::writeLog('7-' . $this->module . '-rowcount-' . $rowcount);
         }
         return GlobalVar::$CHECK_SUCCESS;
     }

@@ -4,6 +4,7 @@ namespace USQL\Library\SqlRestraint\Abstracts;
 use USQL\Library\SqlRestraint\Common\ErrorLog;
 use USQL\Library\SqlRestraint\Common\CommonTool;
 use USQL\Library\SqlRestraint\Common\GlobalVar;
+use USQL\Library\Config;
 
 abstract class HandlerAbstract
 {
@@ -53,7 +54,7 @@ abstract class HandlerAbstract
                 $res = $this->inList($index, $fields);
                 break;
             default:
-                ErrorLog::writeLog('1-' . $this->module . '-' . $fields['expr_type']);
+                ErrorLog::writeLog('0-' . $this->module . '-' . $fields['expr_type']);
                 break;
         }
         return $res;
@@ -86,7 +87,7 @@ abstract class HandlerAbstract
         }
         if (isset($fields['base_expr']) && $fields['base_expr'] && $fields['base_expr'] == '*') {
             if (isset($parentModule['expr_type']) && $parentModule['expr_type'] == 'aggregate_function' && $parentModule['base_expr'] == 'count') {} else {
-                ErrorLog::writeLog('4-' . $this->module . '-*');
+                ErrorLog::writeLog('2-' . $this->module . '-*');
             }
         }
     }
@@ -98,7 +99,7 @@ abstract class HandlerAbstract
         }
         // 判断下函数是否禁用
         if (CommonTool::math($fields['base_expr'])) {
-            ErrorLog::writeLog('3-' . $this->module . '-fun-' . $fields['base_expr']);
+            ErrorLog::writeLog('1-' . $this->module . '-fun-' . $fields['base_expr']);
         }
         if (isset($fields['sub_tree']) && $fields['sub_tree']) {
             foreach ($fields['sub_tree'] as $key => $val) {
@@ -114,7 +115,7 @@ abstract class HandlerAbstract
             ErrorLog::writeLog('3-' . $this->module . '-fun-' . $fields['base_expr']);
         } else {
             if (CommonTool::math($fields['base_expr'])) {
-                ErrorLog::writeLog('3-' . $this->module . '-fun-' . $fields['base_expr']);
+                ErrorLog::writeLog('1-' . $this->module . '-fun-' . $fields['base_expr']);
             }
         }
         if (isset($fields['sub_tree']) && $fields['sub_tree']) {
@@ -133,7 +134,7 @@ abstract class HandlerAbstract
             }
         }
         if ($index >= 2) {
-            ErrorLog::writeLog('5-' . $this->module . '-join-max');
+            ErrorLog::writeLog('9-' . $this->module . '-join-max');
         }
         if (isset($fields['alias']) && $fields['alias'] && CommonTool::keyWord($fields['alias']['no_quotes'])) {
             //ErrorLog::writeLog('2-' . $this->module . '-alias-' . $fields['alias']['no_quotes']);
@@ -151,16 +152,16 @@ abstract class HandlerAbstract
             'like'
         ];
         if (in_array($fields['base_expr'], $tmp)) {
-            ErrorLog::writeLog('3-' . $this->module . '-operator-' . $fields['base_expr']);
+            ErrorLog::writeLog('4-' . $this->module . '-operator-' . $fields['base_expr']);
         }
         return GlobalVar::$CHECK_SUCCESS;
     }
 
     protected function inList($index, $fields)
     {
-        $inMaxNum = 1000;
-        if (isset($fields['sub_tree']) && $fields['sub_tree'] && count($fields['sub_tree']) > $inMaxNum) {
-            ErrorLog::writeLog('3-' . $this->module . '-in-list-max');
+        $maxNum=Config::get('sql.list_max');
+        if (isset($fields['sub_tree']) && $fields['sub_tree'] && count($fields['sub_tree']) > $maxNum) {
+            ErrorLog::writeLog('6-' . $this->module . '-in-list-max');
         }
         return GlobalVar::$CHECK_SUCCESS;
     }

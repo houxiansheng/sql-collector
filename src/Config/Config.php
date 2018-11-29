@@ -18,6 +18,9 @@ return [
         'topic' => 'sqltool.youxinjinrong.com_sql_collect_topic'
     ],
     'sql' => [
-        'maxNum' => 100
+        'max_num' => 100,
+        'off_set' => 1000,
+        'row_count' => 10000,
+        'list_max' => 1000
     ]
 ];

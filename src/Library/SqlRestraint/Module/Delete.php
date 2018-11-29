@@ -12,7 +12,7 @@ class Delete extends HandlerAbstract
 
     public function handler($index, array $fields)
     {
-        ErrorLog::writeLog('5-delete');
+        ErrorLog::writeLog('8-delete');
         $res = GlobalVar::$CHECK_SUCCESS;
         return $res;
     }

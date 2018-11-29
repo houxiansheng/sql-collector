@@ -10,7 +10,7 @@ class HistorySql
 
     public static function write($sql)
     {
-        $max = Config::get('sql.maxNum');
+        $max = Config::get('sql.max_num');
         if (count(self::$sql) < $max) {
             self::$sql[] = $sql;
         }

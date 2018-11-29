@@ -32,85 +32,47 @@ class SqlStandard
         self::$self = new self();
         return self::$self;
     }
-
     /**
-     * 仅收集sql不分析
-     * 
-     * @param string $dbName            
-     * @param string $sql            
-     * @param array $extraInfo
-     *            [
-     *            'pname' => '项目名字（gap.youxinjinrong.com）',
-     *            'host' => '域名（test.youxinjinrong.com）',
-     *            'uri' => '访问路径（/test/redis）'
-     *            ]
+     * 收集项目信息
+     *
+     * @param string $dbName
+     *            库名
+     * @param string $query
+     *            SQL语句（如select id from table_a where id=? 格式，如果不能拆分参数可以写整个sql语句）
+     * @param string $bindings
+     *            $query对应的绑定信息json格式,如果没有填写{}
+     * @param int $takeTime
+     *            执行sql消耗时间
+     * @param int $execTime
+     *            程序执行时间
+     * @param string $pname
+     *            项目名称
+     * @param string $host
+     *            访问域名，若脚本填写cript
+     * @param string $uri
+     *            访问域名，若脚本填写脚本相关标识
+     * @param string $request
+     *            请求参数$_REQUEST,json格式，若脚本传{}
      * @return boolean
      */
-    public function collect($dbName, $query, $bindings, array $extraInfo = [])
+    public function collect($dbName, $query, $bindings, $takeTime, $execTime, $pname, $host, $uri, $request)
     {
         $data = [
             'db' => $dbName,
             'query' => $query,
-            'bindings' => $bindings
+            'bindings' => $bindings,
+            'take_time' => $takeTime,
+            'exec_time' => $execTime
+        ];
+        $extraInfo = [
+            'pname' => $pname,
+            'host' => $host,
+            'uri' => $uri,
+            'request' => $request
         ];
         HistorySql::write($data);
         $this->extraInfo = $extraInfo;
         return true;
-    }
-
-    /**
-     * 收集和分析sql
-     *
-     * @param string $dbName            
-     * @param string $sql            
-     * @param array $extraInfo
-     *            [
-     *            'pname' => '项目名字（gap.youxinjinrong.com）',
-     *            'host' => '域名（test.youxinjinrong.com）',
-     *            'uri' => '访问路径（/test/redis）'
-     *            ]
-     * @return array [
-     *         'code' => '错误码0:正常1：SQL语句异常',
-     *         'errMsg' => '错误信息',
-     *         'data' => [
-     *         'parser' => 'sql解析后的结构',
-     *         'msg' => [
-     *         '不符合规范地方'
-     *         ]
-     *         ]
-     *         ]
-     */
-    public function handler($dbName, $query, $bindings, array $extraInfo = [])
-    {
-        $data = [
-            'db' => $dbName,
-            'query' => $query,
-            'bindings' => $bindings
-        ];
-        HistorySql::write($data);
-        $this->extraInfo = $extraInfo;
-        try {
-            $sql = str_replace("?", "'%s'", $query);
-            $sql = vsprintf($sql, $bindings);
-            $parser = $this->phpSqlParser->parse($sql, true);
-            $res = $this->restraint->hander($parser);
-            $return = [
-                'code' => 0,
-                'errMsg' => 'success',
-                'data' => [
-                    'parser' => $parser,
-                    'msg' => $res
-                ]
-            ];
-        } catch (\Exception $e) {
-            $return = [
-                'code' => 1,
-                'errMsg' => $e->getMessage(),
-                'data' => []
-            
-            ];
-        }
-        return $return;
     }
 
     /**
@@ -204,15 +166,6 @@ class SqlStandard
 
     private function getExtraInfo()
     {
-        if (isset($_SERVER['DOCUMENT_ROOT']) || isset($_SERVER['PWD'])) {
-            $root = $_SERVER['DOCUMENT_ROOT'] ? $_SERVER['DOCUMENT_ROOT'] : $_SERVER['PWD'];
-            $dir = explode('/', __DIR__);
-            $root = explode('/', $root);
-            $array_intersect = array_intersect($dir, $root);
-            $projectName = array_pop($array_intersect);
-        } else {
-            $projectName = '';
-        }
         if (isset($_SERVER['REQUEST_URI'])) {
             $uri = $_SERVER['REQUEST_URI'];
         } elseif ($_SERVER['PHP_SELF'] == 'artisan') {
@@ -228,9 +181,7 @@ class SqlStandard
         $request = isset($_GET) ? $_GET : [];
         $request = isset($_POST) ? array_merge($request, $_POST) : $request;
         $uriArr = explode('?', $uri);
-        $this->extraInfo['pname'] = isset($this->extraInfo['pname']) ? $this->extraInfo['pname'] : $projectName;
         $this->extraInfo['host'] = isset($this->extraInfo['host']) ? $this->extraInfo['host'] : $host;
-        $this->extraInfo['uri'] = isset($this->extraInfo['uri']) && $this->extraInfo['uri'] ? $this->extraInfo['uri'] : $uriArr[0];
         $this->extraInfo['request'] = json_encode($request);
         return $this->extraInfo;
     }

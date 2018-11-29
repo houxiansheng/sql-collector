@@ -16,5 +16,8 @@ return [
         'project' => 'project1',
         'msg_center_url' => $msgCenterUrl,
         'topic' => 'sqltool.youxinjinrong.com_sql_collect_topic'
+    ],
+    'sql' => [
+        'maxNum' => 100
     ]
 ];

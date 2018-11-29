@@ -1,6 +1,8 @@
 <?php
 namespace USQL\Library\SqlRestraint\Common;
 
+use USQL\Library\Config;
+
 class HistorySql
 {
 
@@ -8,14 +10,9 @@ class HistorySql
 
     public static function write($sql)
     {
-        if (count(self::$sql) < 50 && isset($sql['db']) && isset($sql['query'])) {
-            $uniq = md5($sql['db'] . $sql['query']);
-            if (! in_array($sql, self::$sql)) {
-                $sql['count'] = 1;
-                self::$sql[$uniq] = $sql;
-            } elseif ($sql) {
-                self::$sql[$uniq]['count'] ++;
-            }
+        $max = Config::get('sql.maxNum');
+        if (count(self::$sql) < $max) {
+            self::$sql[] = $sql;
         }
     }
 

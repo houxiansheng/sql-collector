@@ -120,6 +120,34 @@ class SqlStandard
         }
         return $return;
     }
+    public function replaceConst($sql)
+    {
+        $sql = ' ' . $sql . ' ';
+        // 替换换行，空格
+        $symbolsReplace = $this->specialSymbolsReplace();
+        $sql = preg_replace(array_keys($symbolsReplace), array_values($symbolsReplace), $sql);
+        try {
+            $parser = $this->phpSqlParser->parse($sql, true);
+        } catch (\Exception $e) {
+            $parser = [];
+        }
+        $constArr = [];
+        if (is_array($parser)) {
+            $this->getConst($parser, $constArr);
+            if ($constArr) {
+                $pattern = '/(.*)' . implode('(.*)?', $constArr) . '(.*)?/';
+                preg_match($pattern, $sql, $match);
+                array_shift($match);
+                $sql = implode(' ? ', $match);
+            }
+        }
+        $sql = preg_replace(array_keys($symbolsReplace), array_values($symbolsReplace), $sql);
+        $return = [
+            'sql' => trim($sql),
+            'list' => $constArr
+        ];
+        return $return;
+    }
     /**
      * 删除常量
      *
@@ -274,7 +302,10 @@ class SqlStandard
     {
         if (is_array($parser)) {
             foreach ($parser as $key => &$val) {
-                if (is_array($val)) {
+                if ($key === 'LIMIT') {
+                    is_numeric($val['offset']) && array_push($constArr, $val['offset']);
+                    is_numeric($val['rowcount']) && array_push($constArr, $val['rowcount']);
+                } elseif (is_array($val)) {
                     $this->getConst($parser[$key], $constArr);
                 } else if ($key == 'expr_type' && $val == 'const') {
                     array_push($constArr, $parser['base_expr']);
@@ -290,7 +321,7 @@ class SqlStandard
             $topicName = Config::get('kafka.topic');
             try {
                 $data = [
-                    'extra' => json_encode($this->getExtraInfo()),
+                    'extra' => json_encode($this->extraInfo),
                     'sql' => json_encode($sql)
                 ];
                 // 临时替换为curl方式
@@ -312,27 +343,5 @@ class SqlStandard
         $output = curl_exec($ch);
         curl_close($ch);
         return $output;
-    }
-
-    private function getExtraInfo()
-    {
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $uri = $_SERVER['REQUEST_URI'];
-        } elseif ($_SERVER['PHP_SELF'] == 'artisan') {
-            $uri = '/' . implode('/', $_SERVER['argv']);
-        } else {
-            $uri = '';
-        }
-        if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST']) {
-            $host = $_SERVER['HTTP_HOST'];
-        } else {
-            $host = 'script';
-        }
-        $request = isset($_GET) ? $_GET : [];
-        $request = isset($_POST) ? array_merge($request, $_POST) : $request;
-        $uriArr = explode('?', $uri);
-        $this->extraInfo['host'] = isset($this->extraInfo['host']) ? $this->extraInfo['host'] : $host;
-        $this->extraInfo['request'] = json_encode($request);
-        return $this->extraInfo;
     }
 }

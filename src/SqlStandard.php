@@ -120,14 +120,164 @@ class SqlStandard
         }
         return $return;
     }
-    public function delConst(&$parser){
-        if(is_array($parser)){
-            foreach ($parser as $key=>&$val){
-                if(is_array($val)){
-                    $this->delConst($parser[$key]);
-                }else
-                    if($key=='expr_type' && $val=='const'){
-                        $parser['base_expr']='?';
+    /**
+     * 删除常量
+     *
+     * @param unknown $sql
+     * @return array [
+     *         'sql' => '替换后sql',
+     *         'list' => [
+     *         '匹配的常量']
+     *         ]
+     */
+    public function delConst($sql)
+    {
+        $sql = ' ' . $sql . ' ';
+        // 替换换行，空格
+        $symbolsReplace = $this->specialSymbolsReplace();
+        $sql = preg_replace(array_keys($symbolsReplace), array_values($symbolsReplace), $sql);
+        try {
+            $parser = $this->phpSqlParser->parse($sql, true);
+        } catch (\Exception $e) {
+            $parser = [];
+        }
+        $constArr = [];
+        if (is_array($parser)) {
+            $this->getConst($parser, $constArr);
+            $pattern = '/(.*)' . implode('(.*)?', $constArr) . '(.*)?/';
+            preg_match($pattern, $sql, $match);
+            array_shift($match);
+            $sql = implode('', $match);
+        }
+        $compare = array_merge($this->operatorReplace(), $this->specialSymbolsReplace());
+        $sql = preg_replace(array_keys($compare), array_values($compare), $sql);
+        $sql = trim(implode(' ', array_unique(explode(' ', $sql))));
+        $return = [
+            'sql' => $sql,
+            'list' => array_unique($constArr)
+        ];
+        return $return;
+    }
+    
+    /**
+     * 删除保留字段
+     *
+     * @param unknown $sql
+     * @return array [
+     *         'sql' => '替换后sql',
+     *         'list' => [
+     *         '匹配到保留字'
+     *         ]
+     *         ]
+     */
+    public function delReservedField($sql)
+    {
+        $sql = ' ' . $sql . ' ';
+        $pattern = array_merge($this->reservedFieldReplace(), $this->specialSymbolsReplace());
+        $newSql = preg_replace(array_keys($pattern), array_values($pattern), $sql);
+        $sqlArr = explode(' ', $sql);
+        $newSqlArr = explode(' ', $newSql);
+        $diff = array_diff($sqlArr, $newSqlArr);
+        $return = [
+            'sql' => trim($newSql),
+            'list' => array_unique($diff)
+        ];
+        return $return;
+    }
+    
+    private function operatorReplace()
+    {
+        $fields = [
+            '/,/' => ' ',
+            '/(`|;|\*)/' => '',
+            '/( ){1,}and( ){1,}/' => ' ',
+            '/( ){1,}or( ){1,}/' => ' ',
+            '/\(/' => '',
+            '/\)/' => '',
+            '/\?/' => '',
+            '/_/' => '',
+            '/\./' => '',
+            '/( ){0,}>( ){1,}=/' => 'ggttee ',
+            '/( ){0,}<( ){1,}=/' => 'llttee ',
+            '/( ){0,}!( ){1,}=/' => 'nneeqq ',
+            '/( ){0,}<( ){1,}>/' => 'nneeqq ',
+            // '/( ){1,}=/' => '= ',
+            '/( ){0,}=/' => 'eeqq ',
+            '/( ){0,}>/' => 'gggtt ',
+            '/( ){0,}</' => 'llee ',
+            '/( ){1,}is( ){1,}null/' => 'isnull ',
+            '/( ){1,}is( ){1,}not( ){1,}null/' => 'isnotnull ',
+            '/( ){1,}between/' => 'between ',
+            '/( ){1,}not( ){1,}in/' => 'notin ',
+            '/( ){1,}in( ){1,}/' => 'in ',
+            '/( ){1,}not( ){1,}like/' => 'notlike ',
+            '/( ){1,}like/' => 'like ',
+            '/( ){1,}regexp/' => 'regexp '
+        ];
+        return $fields;
+    }
+    
+    private function specialSymbolsReplace()
+    {
+        $fields = [
+            '/\n/' => ' ',
+            '/( ){2,}/' => ' '
+        ];
+        return $fields;
+    }
+    
+    private function reservedFieldReplace()
+    {
+        $fields = [
+            '/( ){1,}desc( ){1,}/' => ' ',
+            '/( ){1,}group( ){1}by( ){1,}/' => ' ',
+            '/( ){1,}record( ){1,}/' => ' ',
+            '/( ){1,}show( ){1,}/' => ' ',
+            '/( ){1,}values( ){1,}/' => ' ',
+            '/( ){1,}columndefinition( ){1,}/' => ' ',
+            '/( ){1,}describe( ){1,}/' => ' ',
+            '/( ){1,}having( ){1,}/' => ' ',
+            '/( ){1,}referencedefinition( ){1,}/' => ' ',
+            '/( ){1,}sqlchunk( ){1,}/' => ' ',
+            '/( ){1,}where( ){1,}/' => ' ',
+            '/( ){1,}column( ){1,}/' => ' ',
+            '/( ){1,}drop( ){1,}/' => ' ',
+            '/( ){1,}index( ){1,}/' => ' ',
+            '/( ){1,}indexes( ){1,}/' => ' ',
+            '/( ){1,}rename( ){1,}/' => ' ',
+            '/( ){1,}sql( ){1,}/' => ' ',
+            '/( ){1,}createdefinition( ){1,}/' => ' ',
+            '/( ){1,}duplicate( ){1,}/' => ' ',
+            '/( ){1,}insert( ){1,}/' => ' ',
+            '/( ){1,}replace( ){1,}/' => ' ',
+            '/( ){1,}table( ){1,}/' => ' ',
+            '/( ){1,}create( ){1,}/' => ' ',
+            '/( ){1,}explain( ){1,}/' => ' ',
+            '/( ){1,}into( ){1,}/' => ' ',
+            '/( ){1,}select( ){1,}/' => ' ',
+            '/( ){1,}union( ){1,}/' => ' ',
+            '/( ){1,}default( ){1,}/' => ' ',
+            '/( ){1,}on( ){1,}/' => ' ',
+            '/( ){1,}limit( ){1,}/' => ' ',
+            '/( ){1,}select( ){1,}/' => ' ',
+            '/( ){1,}update( ){1,}/' => ' ',
+            '/( ){1,}delete( ){1,}/' => ' ',
+            '/( ){1,}from( ){1,}/' => ' ',
+            '/( ){1,}order( ){1}by( ){1,}/' => ' ',
+            '/( ){1,}set( ){1,}/' => ' ',
+            '/( ){1,}using( ){1,}/' => ''
+        ];
+        return $fields;
+    }
+    
+    private function getConst($parser, &$constArr)
+    {
+        if (is_array($parser)) {
+            foreach ($parser as $key => &$val) {
+                if (is_array($val)) {
+                    $this->getConst($parser[$key], $constArr);
+                } else if ($key == 'expr_type' && $val == 'const') {
+                    array_push($constArr, $parser['base_expr']);
                 }
             }
         }
@@ -135,9 +285,9 @@ class SqlStandard
     }
     public function __destruct()
     { // 发送统计好的sql信息
-        $topicName = Config::get('kafka.topic');
         $sql = HistorySql::get();
         if (is_array($sql) && $sql) {
+            $topicName = Config::get('kafka.topic');
             try {
                 $data = [
                     'extra' => json_encode($this->getExtraInfo()),

@@ -304,7 +304,9 @@ class SqlStandard
             foreach ($parser as $key => &$val) {
                 if ($key === 'LIMIT') {
                     is_numeric($val['offset']) && array_push($constArr, $val['offset']);
-                    is_numeric($val['rowcount']) && array_push($constArr, $val['rowcount']);
+                    if($val['rowcount']){
+                        array_push($constArr, $val['rowcount']);
+                    }
                 } elseif (is_array($val)) {
                     $this->getConst($parser[$key], $constArr);
                 } else if ($key == 'expr_type' && $val == 'const') {

@@ -47,12 +47,11 @@ class DefaultProcessor extends \USQL\Library\GoogleSqlParser\Processors\Abstract
     public function process($sql) {
 
         $inputArray = $this->splitSQLIntoTokens($sql);
-
         // this is the highest level lexical analysis. This is the part of the
         // code which finds UNION and UNION ALL query parts
         $processor = new UnionProcessor();
         $queries = $processor->process($inputArray);
-
+        
         // If there was no UNION or UNION ALL in the query, then the query is
         // stored at $queries[0].
         if (!$processor->isUnion($queries)) {

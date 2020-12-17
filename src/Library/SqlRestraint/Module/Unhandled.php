@@ -9,10 +9,12 @@ class Unhandled extends HandlerAbstract
 {
 
     protected $module = null;
+    use Recursion;
 
-    public function handler($index, array $fields, $parentModule = null)
+    public function handler($index, array $fields, $parentModule = null, $depth = 0)
     {
-        ErrorLog::writeLog('0-'.$this->module);
+        // ErrorLog::writeLog($depth.'-'.$index.'-0-'.$this->module);
+        ErrorLog::writeLogV2($depth, $index, $this->module, 'non', 'non', 0);
         $res = GlobalVar::$CHECK_SUCCESS;
         return $res;
     }

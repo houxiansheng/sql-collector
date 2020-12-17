@@ -11,7 +11,13 @@ class ErrorLog
         self::$errMsg[] = $errMsg;
         self::$errMsg = array_unique(self::$errMsg);
     }
-
+    public static function writeLogV2($depth,$index,$module,$type,$msg,$level)
+    {
+        self::$errMsg[$depth][$index][$module][$type] = [
+            'msg'=>$msg,
+            'level'=>$level
+        ];
+    }
     public static function getLog()
     {
         sort(self::$errMsg);

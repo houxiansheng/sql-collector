@@ -9,8 +9,9 @@ class Set extends HandlerAbstract
 {
 
     protected $module = 'set';
+    use Recursion;
 
-    public function handler($index, array $fields, $parentModule = null)
+    public function handler($index, array $fields, $parentModule = null, $depth = 0)
     {
         $res = GlobalVar::$CHECK_SUCCESS;
         return $res;

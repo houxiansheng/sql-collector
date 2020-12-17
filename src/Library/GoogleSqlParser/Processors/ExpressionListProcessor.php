@@ -269,6 +269,8 @@ class ExpressionListProcessor extends \USQL\Library\GoogleSqlParser\Processors\A
                 case 'LIKE':
                 case '%':
                 case '!=':
+                case '!<':
+                case '!>':
                 case '<>':
                 case 'REGEXP':
                 case '!':

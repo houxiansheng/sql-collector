@@ -3,28 +3,150 @@ namespace USQL\Library\SqlRestraint\Common;
 
 class CommonTool
 {
+    public static $counter=[];
+    
+    public static function counter($module,$val){
+        $sqlUId=GlobalVar::getSqlUId();
+        if(self::$counter && !isset(self::$counter[$sqlUId])){
+            self::$counter=[];
+        }
+        self::$counter[$sqlUId][$module][$val]=1;
+        return count(self::$counter[$sqlUId][$module]);
+        
+    }
+    public static function doubleOperate(){
+        $arr=[
+            'NOT LIKE'=>[
+                'module'=>'where',
+                'type'=>'operate',
+                'msg'=>'not like',
+                'level'=>4
+            ],
+            'NOT IN'=>[
+                'module'=>'where',
+                'type'=>'operate',
+                'msg'=>'not in',
+                'level'=>4
+            ]
+        ];
+        return $arr;
+    }
 
     public static function math($fun)
     {
         $funs = [
-            'ABS', // (x) 返回x的绝对值
-            'BIN', // (x) 返回x的二进制（OCT返回八进制，HEX返回十六进制）
-            'CEILING', // (x) 返回大于x的最小整数值
-            'EXP', // (x) 返回值e（自然对数的底）的x次方
-            'FLOOR', // (x) 返回小于x的最大整数值
-            'GREATEST', // (x1,x2,...,xn)返回集合中最大的值
-            'LEAST', // (x1,x2,...,xn) 返回集合中最小的值
-            'LN', // (x) 返回x的自然对数
-            'LOG', // (x,y)返回x的以y为底的对数
-            'MOD', // (x,y) 返回x/y的模（余数）
-            'PI', // ()返回pi的值（圆周率）
-            'RAND', // ()返回０到１内的随机值,可以通过提供一个参数(种子)使RAND()随机数生成器生成一个指定的值。
-            'ROUND', // (x,y)返回参数x的四舍五入的有y位小数的值
-            'SIGN', // (x) 返回代表数字x的符号的值
-            'SQRT', // (x) 返回一个数的平方根
-            'TRUNCATE' // (x,y) 返回数字x截短为y位小数的结果
+            'ABS' => 1,
+            'PI' => 1,
+            'MOD' => 1,
+            'SQRT' => 1,
+            'CEIL' => 1,
+            'CEILING' => 1,
+            'RAND' => 1,
+            'ROUND' => 1,
+            'TRUNCATE' => 1,
+            'SIGN' => 1,
+            'POW' => 1,
+            'POWER' => 1,
+            'EXP' => 1,
+            'LOG' => 1,
+            'LOG2' => 1,
+            'LOG10' => 1,
+            'RADIANS' => 1,
+            'DEGREES' => 1,
+            'SIN' => 1,
+            'ASIN' => 1,
+            'COS' => 1,
+            'ACOS' => 1,
+            'TAN' => 1,
+            'ATAN' => 1,
+            'COT' => 1,
+            'CHAR_LENGTH' => 1,
+            'CONCAT' => 1,
+            'CONCAT_WS' => 1,
+            'LOWER' => 1,
+            'UPPER' => 1,
+            'LEFT' => 1,
+            'RIGHT' => 1,
+            'LPAD' => 1,
+            'RPAD' => 1,
+//             'TRIM' => 1,
+            'REPEAT' => 1,
+            'REPLACE' => 1,
+            'SPACE' => 1,
+            'STRCMP' => 1,
+            'SUBSTRING' => 1,
+            'MID' => 1,
+            'LOCATE' => 1,
+            'LOCATE(SUBSTR' => 1,
+            'INSTR(STR' => 1,
+            'POSITION' => 1,
+            'REVERSE' => 1,
+            'ELT' => 1,
+            'FIELD' => 1,
+            'FIND_IN_SET' => 1,
+            'MAKE_SET' => 1,
+//             'UNIX_TIMESTAMP' => 1,
+//             'FROM_UNIXTIME' => 1,
+//             'MONTH' => 1,
+//             'MONTHNAME' => 1,
+//             'DAYNAME' => 1,
+//             'DAY' => 1,
+//             'DAYOFMONTH' => 1,
+//             'DAYOFWEEK' => 1,
+//             'DAYOFYEAR' => 1,
+//             'WEEK' => 1,
+//             'WEEKOFYEAR' => 1,
+            'QUARTER' => 1,
+//             'HOUR' => 1,
+//             'MINUTE' => 1,
+//             'SECOND' => 1,
+            'EXTRACT' => 1,
+//             'TIME_TO_SEC' => 1,
+            'SEC_TO_TIME' => 1,
+            'TO_DAYS' => 1,
+            'TO_SECNDS' => 1,
+            'ADDDATE' => 1,
+            'DATE_SUB' => 1,
+            'ADDTIME' => 1,
+            'SUBTIME' => 1,
+            'DATE_FORMAT' => 1,
+            'DATEDIFF' => 1,
+            'TIMEDIFF' => 1,
+            'PASSWORD' => 1,
+            'MD5' => 1,
+            'SHA1' => 1,
+            'SHA' => 1,
+            'SHA2' => 1,
+            'ENCRYPT' => 1,
+            'ECODE' => 1,
+            'ENCODE' => 1,
+            'DES_ENCRYPT' => 1,
+            'DES_DECRYPT' => 1,
+            'AES_ENCRYPT' => 1,
+            'AES_DECRYPT' => 1,
+            'COMPRESS' => 1,
+            'UNCOMPRESS' => 1,
+            'AVG' => 1,
+//             'COUNT' => 1,
+//             'MAX' => 1,
+//             'MIN' => 1,
+//             'SUM' => 1,
+            'VAR_POP' => 1,
+            'VARIANCE' => 1,
+            'VAR_SAMP' => 1,
+            'STD' => 1,
+            'STDDEV' => 1,
+            'STDDEV_POP' => 1,
+            'STDDEV_SAMP' => 1,
+            'FORMAT' => 1,
+            'CONV' => 1,
+            'INET_ATON' => 1,
+            'INET_NTOA' => 1,
+            'CAST' => 1,
+            'CONVERT' => 1
         ];
-        if (in_array($fun, $funs)) {
+        $fun=strtoupper($fun);
+        if (isset($funs[$fun])) {
             return true;
         } else {
             return false;

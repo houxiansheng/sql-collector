@@ -1,10 +1,11 @@
 <?php
 if (isset($_SERVER['SITE_ENV']) && $_SERVER['SITE_ENV'] == "production") {
     $zkHosts = $_SERVER['SITE_JINRONG_ZOOKEEPER'];
-    $msgCenterUrl = "http://message_manage.youxinjinrong.com";
+    $msgCenterUrl = "http://message-manage.youxinjinrong.com";
 } else {
     $zkHosts = $_SERVER['SITE_JINRONG_ZOOKEEPER_TEST'];
-    $msgCenterUrl = "http://message_manage.dev.youxinjinrong.com";
+//     $msgCenterUrl = "http://message_manage.dev.youxinjinrong.com";
+    $msgCenterUrl = "http://message_manage.test.youxinjinrong.com";
 }
 return [
     'kafka' => [
@@ -19,8 +20,8 @@ return [
     ],
     'sql' => [
         'max_num' => 100,
-        'off_set' => 1000,
-        'row_count' => 10000,
-        'list_max' => 1000
+        'off_set' => 10000,
+        'row_count' => 1000,
+        'list_max' => 2000
     ]
 ];

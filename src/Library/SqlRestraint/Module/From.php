@@ -7,4 +7,5 @@ class From extends HandlerAbstract
 {
 
     protected $module = 'from';
+    use Recursion;
 }

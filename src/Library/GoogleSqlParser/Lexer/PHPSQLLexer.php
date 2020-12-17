@@ -52,6 +52,8 @@
  *
  */
 namespace USQL\Library\GoogleSqlParser\Lexer;
+use USQL\Library\GoogleSqlParser\Exceptions\InvalidParameterException;
+
 class PHPSQLLexer {
 
     protected $splitters;

@@ -52,7 +52,7 @@
 namespace USQL\Library\GoogleSqlParser\Lexer;
 class LexerSplitter {
 
-    protected static $splitters = array("<=>", "\r\n", "!=", ">=", "<=", "<>", "<<", ">>", ":=", "\\", "&&", "||", ":=",
+    protected static $splitters = array("<=>", "\r\n", "!=","!<","!>", ">=", "<=", "<>", "<<", ">>", ":=", "\\", "&&", "||", ":=",
                                        "/*", "*/", "--", ">", "<", "|", "=", "^", "(", ")", "\t", "\n", "'", "\"", "`",
                                        ",", "@", " ", "+", "-", "*", "/", ";");
     protected $tokenSize;

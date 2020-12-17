@@ -55,7 +55,7 @@ class LimitProcessor extends \USQL\Library\GoogleSqlParser\Processors\AbstractPr
                 $comma = $i;
                 break;
             }
-            if ($trim === "OFFSET") {
+            if (strtoupper($trim) === "OFFSET") {
                 $comma = $i;
                 $exchange = true;
                 break;

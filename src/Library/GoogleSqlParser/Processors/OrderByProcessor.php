@@ -69,7 +69,7 @@ class OrderByProcessor extends \USQL\Library\GoogleSqlParser\Processors\Abstract
             $parseInfo['no_quotes'] = $this->revokeQuotation($parseInfo['base_expr']);
             // search to see if the expression matches an alias
             foreach ($select as $clause) {
-                if (!$clause['alias']) {
+                if (!isset($clause['alias']) || !$clause['alias']) {
                     continue;
                 }
 

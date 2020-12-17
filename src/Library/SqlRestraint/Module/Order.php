@@ -8,8 +8,9 @@ class Order extends HandlerAbstract
 {
 
     protected $module = 'order';
+    use Recursion;
 
-    public function handler($index, array $fields, $parentModule = null)
+    public function handler($index, array $fields, $parentModule = null, $depth = 0)
     {
         return GlobalVar::$CHECK_SUCCESS;
     }

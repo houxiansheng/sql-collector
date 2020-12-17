@@ -1,15 +1,16 @@
 {
     "name": "uxin/sql-collector",
-    "description": "sql-collector",
-    "license": "MIT",
+    "description": "SQL规范检测器。",
+    "type": "library",
+    "homepage": "http://git.xin.com/jinrong/sql-collector",
+    "license": "Private Protocol",
     "authors": [
         {
-            "name": "hxb",
+            "name": "HouXianBiao",
             "email": "houxianbiao@xin.com"
         }
     ],
     "require": {},
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "USQL\\": "src/"

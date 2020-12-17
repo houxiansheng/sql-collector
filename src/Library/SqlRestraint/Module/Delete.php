@@ -9,10 +9,12 @@ class Delete extends HandlerAbstract
 {
 
     protected $module = 'delete';
+    use Recursion;
 
-    public function handler($index, array $fields, $parentModule = null)
+    public function handler($index, array $fields, $parentModule = null, $depth = 0)
     {
-        ErrorLog::writeLog('8-delete');
+        // ErrorLog::writeLog($depth.'-'.$index.'-8-delete');
+        ErrorLog::writeLogV2($depth, $index, 'module', 'crud', 'delete', 8);
         $res = GlobalVar::$CHECK_SUCCESS;
         return $res;
     }

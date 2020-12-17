@@ -442,7 +442,6 @@ class SQLProcessor extends SQLChunkProcessor {
 
             $prev_category = $token_category;
         }
-
         return parent::process($out);
     }
 }

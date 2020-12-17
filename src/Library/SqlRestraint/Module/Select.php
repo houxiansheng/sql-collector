@@ -7,4 +7,5 @@ class Select extends HandlerAbstract
 {
 
     protected $module = 'select';
+    use Recursion;
 }

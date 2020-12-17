@@ -94,7 +94,6 @@ class PHPSQLParser
     {
         $processor = new DefaultProcessor();
         $queries = $processor->process($sql);
-        
         // calc the positions of some important tokens
         if ($calcPositions) {
             $calculator = new PositionCalculator();

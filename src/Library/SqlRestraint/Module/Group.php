@@ -8,8 +8,9 @@ class Group extends HandlerAbstract
 {
 
     protected $module = 'group';
+    use Recursion;
 
-    public function handler($index, array $fields, $parentModule = null)
+    public function handler($index, array $fields, $parentModule = null, $depth = 0)
     {
         return GlobalVar::$CHECK_SUCCESS;
     }

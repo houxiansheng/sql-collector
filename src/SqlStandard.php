@@ -585,20 +585,20 @@ class SqlStandard
     }
     public function __destruct()
     { // 发送统计好的sql信息
-        $sql = HistorySql::get();
-        if (is_array($sql) && $sql) {
-            $topicName = Config::get('kafka.topic');
-            try {
-                $data = [
-                    'extra' => json_encode($this->getExtraInfo()),
-                    'sql' => json_encode($sql)
-                ];
-                // 临时替换为curl方式
-                //$res = $this->sendCurl($data);
-                $producerAdapt = new producerAdapt();
-                $res = $producerAdapt->send($topicName, $data);
-            } catch (\Exception $e) {}
-        }
+//        $sql = HistorySql::get();
+//        if (is_array($sql) && $sql) {
+//            $topicName = Config::get('kafka.topic');
+//            try {
+//                $data = [
+//                    'extra' => json_encode($this->getExtraInfo()),
+//                    'sql' => json_encode($sql)
+//                ];
+//                // 临时替换为curl方式
+//                //$res = $this->sendCurl($data);
+//                $producerAdapt = new producerAdapt();
+//                $res = $producerAdapt->send($topicName, $data);
+//            } catch (\Exception $e) {}
+//        }
     }
     private function getExtraInfo(){
         if(strtolower(php_sapi_name())=='cli'){
